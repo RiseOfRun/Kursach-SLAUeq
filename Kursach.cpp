@@ -136,6 +136,10 @@ public:
 	}
 
 	//параметры
+	double U(double x, double y)
+	{
+		return 1;
+	}
 
 	double Ug(vector<double>& node, int k)
 	{
@@ -144,25 +148,12 @@ public:
 
 	double UB(vector<double>& node, int k)
 	{
-		switch (k)
-		{
-		case 0:
-			return 20 * node[1] - 27;
-			break;
-		default:
-			break;
-		}
+		return 1;
 	}
 
 	double Tetta(vector<double>& node, int k)
 	{
-		switch (k)
-		{
-		case 0: return 20;
-		case 1: return 0;
-			//case 2: return (2.);
-		default: return 0;
-		}
+		return 0;
 	}
 
 
@@ -809,7 +800,14 @@ int main()
 
 	testNet.Node = { {1,1}, {2,1}, {1.5,1.5}, {1,2},{2,2} };
 	testNet.Elements = { {0,1,2},{0,2,3},{1,2,4},{2,3,4} };
-	testNet.firstCondi = {{0,0},{1,0},{3,0},{4,0}};
+	testNet.firstCondi = {{0,0},{1,0}};
+	testNet.SecondCondi = {
+		{1,4,0},
+		{3,4,0}
+	};
+	testNet.ThirdCondi = {
+		{0,3,0,0}
+	};
 	testNet.fields.resize(testNet.Elements.size());
 	for (size_t i = 0; i < testNet.Elements.size(); i++)
 	{
@@ -823,6 +821,8 @@ int main()
 //	testSys.AddSecondCondi();
 //	testSys.AddThirdCondi();
 	testSys.AddFirst();
+	testSys.AddSecondCondi();
+	testSys.AddThirdCondi();
 	testSys.PrintPlot(testSys.A);
 	testSys.LUFactorization(testSys.AProf, testSys.LU);
 	AuxVectors useless;
@@ -835,7 +835,8 @@ int main()
 	testSys.LOS_LU(testSys.AProf, testSys.q, testSys.b, testSys.LU, useless, 10000, 1e-13);
 	for (size_t i = 0; i < testSys.AProf.size; i++)
 	{
-		cout << testSys.q[i] << endl;
+		double U = testSys.U(testSys.FuckingNet.Node[i][0], testSys.FuckingNet.Node[i][1]);
+		cout << testSys.q[i] << " " <<U << " " << abs(U-testSys.q[i])<< endl;
 	}
 	vector<double> rezult(testSys.AProf.size);
 	testSys.Multiply(testSys.AProf, testSys.q, rezult);
