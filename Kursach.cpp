@@ -2,6 +2,7 @@
 #include <vector>
 #include <functional>
 #include <iomanip>
+#include <fstream>
 // M = l * C
 
 using namespace std;
@@ -32,6 +33,11 @@ class Net
 {
 public:
 	Net()
+	{
+
+	}
+
+	Net(ifstream nodes, ifstream elements, ifstream fields, ifstream condi1, ifstream condi2, ifstream condi3)
 	{
 
 	}
