@@ -57,7 +57,7 @@ public:
 	{
 		for (int i = 0; i < nx; i++)
 		{
-			firstCondi.push_back({i,0 });
+			firstCondi.push_back({ i,0 });
 		}
 	}
 
@@ -122,7 +122,7 @@ public:
 	vector<double>q;
 	double BigEl;
 
-	void PrintPlot(Matrix &A)
+	void PrintPlot(Matrix& A)
 	{
 		int length = A.size();
 		for (int i = 0; i < length; i++)
@@ -138,33 +138,33 @@ public:
 	//параметры
 	double U(double x, double y)
 	{
-		return 2*x+3*y;
+		return 2 * x * x + 3 * y * y;
 	}
 
 	double Ug(vector<double>& node, int k)
 	{
 		double x = node[0];
 		double y = node[1];
-		return 2*x+3*y;
+		return 2 * x * x + 3;
 	}
 
 	double UB(vector<double>& node, int k)
 	{
 		double x = node[0];
 		double y = node[1];
-		return 3*y;
+		return -4 * x + 2 + 3 * y * y;
 	}
 
 	double Tetta(vector<double>& node, int k)
 	{
+		double x = node[0];
+		double y = node[1];
 		switch (k)
 		{
 		case 0:
-			return 4;
-		case 1: 
-			return 6;
-		case 2:
-			return -4;
+			return 8*x;
+		case 1:
+			return 12*y;
 		default:
 			break;
 		}
@@ -173,7 +173,7 @@ public:
 
 	double F(double x, double y, int field)
 	{
-		return 6*x+9*y;
+		return 6 * x*x + 9 * y*y -20;
 	}
 
 	double Lambda(vector<double>& node, int field)
@@ -234,17 +234,17 @@ public:
 		double y2 = FuckingNet.Node[el[1]][1];
 		double x3 = FuckingNet.Node[el[2]][0];
 		double y3 = FuckingNet.Node[el[2]][1];
-		vector<double> point4 = {findMax(x1, x2) - abs(x1-x2)/1, findMax(y1,y2) - abs(y1-y2)};
-		vector<double> point5 = {findMax(x3, x2) - abs(x3-x2)/1, findMax(y3,y2) - abs(y3-y2)};
-		vector<double> point6 = {findMax(x1, x3) - abs(x1-x3)/1, findMax(y1,y3) - abs(y1-y3)};
+		vector<double> point4 = { findMax(x1, x2) - abs(x1 - x2) / 1, findMax(y1,y2) - abs(y1 - y2) };
+		vector<double> point5 = { findMax(x3, x2) - abs(x3 - x2) / 1, findMax(y3,y2) - abs(y3 - y2) };
+		vector<double> point6 = { findMax(x1, x3) - abs(x1 - x3) / 1, findMax(y1,y3) - abs(y1 - y3) };
 
 		for (int i = 0; i < 3; i++)
 		{
 			for (int j = 0; j < 3; j++)
 			{
 				double sumL = Lambda(point4, field) +
-					          Lambda(point5, field) +
-					          Lambda(point6, field);
+					Lambda(point5, field) +
+					Lambda(point6, field);
 				G[i].push_back(sumL * multix * (D_1[i][1] * D_1[j][1] + D_1[i][2] * D_1[j][2])); // Lambda = const;
 			}
 		}
@@ -563,7 +563,7 @@ public:
 			AProf.DI[n] = max;
 			A[n][n] = max; //ToRemove
 			b[n] = max * Ug(FuckingNet.Node[n], FuckingNet.firstCondi[i][1]);
-  			q[n] = Ug(FuckingNet.Node[n], FuckingNet.firstCondi[i][1]);
+			q[n] = Ug(FuckingNet.Node[n], FuckingNet.firstCondi[i][1]);
 		}
 	}
 	//Решение Ситемы
@@ -647,7 +647,7 @@ public:
 
 		for (int i = 0; i < n; i++)
 		{
-			for (int jadr = A.IA[i]; jadr <A.IA[i+1]; jadr++)
+			for (int jadr = A.IA[i]; jadr < A.IA[i + 1]; jadr++)
 			{
 				int j = A.JA[jadr];
 				Res[i][j] = A.AL[jadr];
@@ -657,7 +657,7 @@ public:
 		return Res;
 	}
 
-	double MultVecs(int size, vector<double> &vec1, vector<double>&vec2)
+	double MultVecs(int size, vector<double>& vec1, vector<double>& vec2)
 	{
 		double sum = 0;
 		for (int i = 0; i < size; i++)
@@ -665,7 +665,7 @@ public:
 		return sum;
 	}
 
-	void Multiply(MatrixProf &A, vector<double> &vec, vector<double> &res)
+	void Multiply(MatrixProf& A, vector<double>& vec, vector<double>& res)
 	{
 		int size = A.size;
 
@@ -681,92 +681,92 @@ public:
 		}
 	}
 
-	void Forward(MatrixProf& A, vector<double> &x, vector<double>& b)
+	void Forward(MatrixProf& A, vector<double>& x, vector<double>& b)
 	{
 		int size = A.size;
 
-			for (int i = 0; i < size; i++)
+		for (int i = 0; i < size; i++)
+		{
+			double sum = 0;
+			int i0 = A.IA[i], i1 = A.IA[i + 1];
+			for (int k = i0; k < i1; k++)
 			{
-				double sum = 0;
-				int i0 = A.IA[i], i1 = A.IA[i + 1];
-				for (int k = i0; k < i1; k++)
-				{
-					int j = A.JA[k];
-					sum += A.AL[k] * x[j];
-				}
-				x[i] = (b[i] - sum) / A.DI[i];
+				int j = A.JA[k];
+				sum += A.AL[k] * x[j];
 			}
+			x[i] = (b[i] - sum) / A.DI[i];
+		}
 	}
 
 	void Backward(MatrixProf& A, vector<double>& x, vector<double>& b)
 	{
 		int size = A.size;
 
-			for (int i = 0; i < size; i++)
-				x[i] = b[i];
+		for (int i = 0; i < size; i++)
+			x[i] = b[i];
 
-			for (int i = size - 1; i >= 0; i--)
+		for (int i = size - 1; i >= 0; i--)
+		{
+			int i0 = A.IA[i], i1 = A.IA[i + 1];
+			for (int k = i0; k < i1; k++)
 			{
-				int i0 = A.IA[i], i1 = A.IA[i + 1];
-				for (int k = i0; k < i1; k++)
-				{
-					int j = A.JA[k];
-					x[j] -= A.AU[k] * x[i];
-				}
+				int j = A.JA[k];
+				x[j] -= A.AU[k] * x[i];
 			}
+		}
 	}
 
-	void LOS_LU(MatrixProf& A, vector<double> &x, vector<double>& f, MatrixProf& LU, AuxVectors& aux, int maxiter, double eps)
+	void LOS_LU(MatrixProf& A, vector<double>& x, vector<double>& f, MatrixProf& LU, AuxVectors& aux, int maxiter, double eps)
 	{
-			int size = A.size;
+		int size = A.size;
 
-			// Calculate r0
-			Multiply(A, x, aux.Ax);
+		// Calculate r0
+		Multiply(A, x, aux.Ax);
+		for (int i = 0; i < size; i++)
+			aux.r[i] = f[i] - aux.Ax[i];
+		Forward(LU, aux.r, aux.r);
+
+		//Calculate z0
+		Backward(LU, aux.z, aux.r);
+
+		// Calculate p0
+		Multiply(A, aux.z, aux.p);
+		Forward(LU, aux.p, aux.p);
+
+		double diff = MultVecs(size, aux.r, aux.r);
+
+		int k = 0;
+		for (; k < maxiter && diff >= eps; k++)
+		{
+			// Calculate alpha
+			double dotP = MultVecs(size, aux.p, aux.p);
+			double a = MultVecs(size, aux.p, aux.r) / dotP;
+
+			// Calculate xk, rk
 			for (int i = 0; i < size; i++)
-				aux.r[i] = f[i] - aux.Ax[i];
-			Forward(LU, aux.r, aux.r);
-
-			//Calculate z0
-			Backward(LU, aux.z, aux.r);
-
-			// Calculate p0
-			Multiply(A, aux.z, aux.p);
-			Forward(LU, aux.p, aux.p);
-
-			double diff = MultVecs(size, aux.r, aux.r);
-
-			int k = 0;
-			for (; k < maxiter && diff >= eps; k++)
 			{
-				// Calculate alpha
-				double dotP = MultVecs(size, aux.p, aux.p);
-				double a = MultVecs(size, aux.p, aux.r) / dotP;
-
-				// Calculate xk, rk
-				for (int i = 0; i < size; i++)
-				{
-					x[i] += a * aux.z[i];
-					aux.r[i] -= a * aux.p[i];
-				}
-
-				// Calculate beta
-				Backward(LU, aux.Ax, aux.r);
-				Multiply(A, aux.Ax, aux.temp);
-				Forward(LU, aux.Ax, aux.temp);
-				double b = -MultVecs(size, aux.p, aux.Ax) / dotP;
-
-				// Calculate zk, pk
-				Backward(LU, aux.temp, aux.r);
-				for (int i = 0; i < size; i++)
-				{
-					aux.z[i] = aux.temp[i] + b * aux.z[i];
-					aux.p[i] = aux.Ax[i] + b * aux.p[i];
-				}
-
-				// Calculate difference
-				diff = MultVecs(size, aux.r, aux.r);
+				x[i] += a * aux.z[i];
+				aux.r[i] -= a * aux.p[i];
 			}
-			maxiter = k;
+
+			// Calculate beta
+			Backward(LU, aux.Ax, aux.r);
+			Multiply(A, aux.Ax, aux.temp);
+			Forward(LU, aux.Ax, aux.temp);
+			double b = -MultVecs(size, aux.p, aux.Ax) / dotP;
+
+			// Calculate zk, pk
+			Backward(LU, aux.temp, aux.r);
+			for (int i = 0; i < size; i++)
+			{
+				aux.z[i] = aux.temp[i] + b * aux.z[i];
+				aux.p[i] = aux.Ax[i] + b * aux.p[i];
+			}
+
+			// Calculate difference
+			diff = MultVecs(size, aux.r, aux.r);
+		}
+		maxiter = k;
 	}
 
 private:
@@ -814,7 +814,7 @@ int main()
 
 	testNet.Node = { {1,1}, {2,1}, {1.5,1.5}, {1,2},{2,2} };
 	testNet.Elements = { {0,1,2},{0,2,3},{1,2,4},{2,3,4} };
-	testNet.firstCondi = { {0,0},{1,0}};
+	testNet.firstCondi = { {0,0},{1,0} };
 	testNet.SecondCondi = {
 		{1,4,0},
 		{3,4,1},
@@ -851,7 +851,7 @@ int main()
 	for (size_t i = 0; i < testSys.AProf.size; i++)
 	{
 		double U = testSys.U(testSys.FuckingNet.Node[i][0], testSys.FuckingNet.Node[i][1]);
-		cout << testSys.q[i] << " " <<U << " " << abs(U-testSys.q[i])<< endl;
+		cout << testSys.q[i] << " " << U << " " << abs(U - testSys.q[i]) << endl;
 	}
 	vector<double> rezult(testSys.AProf.size);
 	testSys.Multiply(testSys.AProf, testSys.q, rezult);
