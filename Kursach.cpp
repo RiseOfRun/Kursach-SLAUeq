@@ -42,7 +42,7 @@ public:
 	vector<vector<int>> firstCondi;
 	vector<vector<int>> SecondCondi;
 	vector<vector<int>> ThirdCondi;
-
+	//добавление информации о подобластях
 	void DevideBy2Fields()
 	{
 		fields = vector<int>(Elements.size());
@@ -52,7 +52,7 @@ public:
 			fields[i] = 1;
 		}
 	}
-
+	//
 	void AddCondi(int nx, int ny)
 	{
 		for (int i = 0; i < nx; i++)
@@ -61,6 +61,7 @@ public:
 		}
 	}
 
+	//построение сетки на треугольниках
 	void BuildNet(double xmin, double xmax, double ymin, double ymax, int nx, int ny)
 	{
 		double hx = (xmax - xmin) / nx;
@@ -101,7 +102,8 @@ public:
 		}
 
 		Elements = Elementstmp;
-		DevideBy2Fields();
+		//разбиение на подобласти
+		//DevideBy2Fields();
 	}
 private:
 };
@@ -129,7 +131,7 @@ public:
 			{
 				cout << A[i][j] << " \t";
 			}
-			cout << endl;
+			cout << "\n";
 		}
 	}
 
@@ -137,7 +139,7 @@ public:
 
 	double Ug(vector<double>& node, int k)
 	{
-		return node[1] * node[1];
+		return 1;
 	}
 
 	double UB(vector<double>& node, int k)
@@ -166,20 +168,12 @@ public:
 
 	double F(double x, double y, int field)
 	{
-		if (field == 0)
-		{
-			return 20;
-		}
-		else return 0;
+		return 3;
 	}
 
 	double Lambda(vector<double>& node, int field)
 	{
-		if (field == 0)
-		{
-			return 10;
-		}
-		else return 1;
+		return 2;
 	}
 
 	double Betta(int field)
@@ -189,7 +183,7 @@ public:
 
 	double Gamma(int field)
 	{
-		return 0;
+		return 3;
 	}
 	//параметры
 
@@ -211,7 +205,7 @@ public:
 		b = vector<double>(FuckingNet.Node.size());
 		q = vector<double>(FuckingNet.Node.size());
 	}
-	//построение матрицы
+	//построение матрицы G
 	vector<vector<double>> BuildG(vector<vector<double>>& D_1, double DetD, vector<int>& el, int field) {
 		vector<vector<double>> G(3);
 		double multix = abs(DetD) / 2;
@@ -225,7 +219,7 @@ public:
 		}
 		return G;
 	}
-
+	//разложение коэф дифузии по квадратичным базисным функциям
 	vector<vector<double>> BuildGDecomposeSquardL(vector<vector<double>>& D_1, double DetD, vector<int>& el, int field) {
 		vector<vector<double>> G(3);
 		double multix = abs(DetD) / 6;
@@ -251,7 +245,7 @@ public:
 		}
 		return G;
 	}
-
+	//разложение коэф дифузии по линейным базисным функциям
 	vector<vector<double>> BuildGDecomposeLinalL(vector<vector<double>>& D_1, double DetD, vector<int>& el, int field) {
 		vector<vector<double>> G(3);
 		double multix = abs(DetD) / 6;
@@ -275,7 +269,7 @@ public:
 		else
 			return x2;
 	}
-
+	//потроение матрицы С, где M = gamma * C
 	Matrix BuildC(double DetD)
 	{
 		Matrix M = Matrix{ {2,1,1 }, { 1,2,1 }, { 1,1,2 } };
@@ -291,7 +285,7 @@ public:
 
 		return M;
 	}
-
+	//умножение матрицы на вектор
 	vector<double> MVecMult(Matrix& A, vector<double>& b)
 	{
 		vector<double> result(A.size());
@@ -371,6 +365,8 @@ public:
 			vector<int> element = FuckingNet.Elements[i];
 			int field = FuckingNet.fields[i];
 			BuildLocal(element, field);
+			PrintPlot(A);
+			cout << "\n\n\n";
 		}
 	}
 
@@ -413,7 +409,7 @@ public:
 		{
 			for (int j = 0; j < length; j++)
 			{
-				G[i][j] += M[i][j] * gamma;
+				G[i][j] += M[i][j] * Gamma(field);
 			}
 		}
 		ToGLobalProf(G, b, el);
@@ -562,7 +558,7 @@ public:
 			AProf.DI[n] = max;
 			A[n][n] = max; //ToRemove
 			b[n] = max * Ug(FuckingNet.Node[n], FuckingNet.firstCondi[i][1]);
-			q[n] = Ug(FuckingNet.Node[n], FuckingNet.firstCondi[i][1]);
+  			q[n] = Ug(FuckingNet.Node[n], FuckingNet.firstCondi[i][1]);
 		}
 	}
 	//Решение Ситемы
@@ -782,42 +778,50 @@ int main()
 {
 	Net testNet;
 	//testNet.BuildNet(0, 2, 0, 2, 2, 2);
-
-	testNet.Node = vector<vector<double>>{
-	{2,0},
-	{2,1},
-	{3,1},
-	{2,4},
-	{7,4}
-	};
-
-	testNet.Elements = vector<vector<int>>{
-		{0,1,2},
-		{2,3,4},
-		{1,2,3}
-	};
-
-	testNet.fields = vector<int>(3);
-	testNet.fields[1] = 1;
-	testNet.fields[2] = 1;
-	testNet.ThirdCondi.resize(1);
-	testNet.ThirdCondi[0] = { 2,4,0,0};
-	testNet.SecondCondi = {
-		///*{0,1,1},
-		//*/{1,3,1},
-		{3,4,0}
-	};
-	testNet.firstCondi = {
-		{0,0},
-		{2,0}
-	};
-
+	//testNet.Node = vector<vector<double>>{
+	//{2,0},
+	//{2,1},
+	//{3,1},
+	//{2,4},
+	//{7,4}
+	//};
+	//testNet.Elements = vector<vector<int>>{
+	//	{0,1,2},
+	//	{2,3,4},
+	//	{1,2,3}
+	//};
+	//testNet.fields = vector<int>(3);
+	//testNet.fields[1] = 1;
+	//testNet.fields[2] = 1;
+	//testNet.ThirdCondi.resize(1);
+	//testNet.ThirdCondi[0] = { 2,4,0,0};
+	//testNet.SecondCondi = {
+	//	///*{0,1,1},
+	//	//*/{1,3,1},
+	//	{3,4,0}
+	//};
+	//testNet.firstCondi = {
+	//	{0,0},
+	//	{2,0}
+	//};
 	//testNet.BuildNet(0,2,0,2,2,2);
+
+
+	testNet.Node = { {1,1}, {2,1}, {1.5,1.5}, {1,2},{2,2} };
+	testNet.Elements = { {0,1,2},{0,2,3},{1,2,4},{2,3,4} };
+	testNet.firstCondi = {{0,0},{1,0},{3,0},{4,0}};
+	testNet.fields.resize(testNet.Elements.size());
+	for (size_t i = 0; i < testNet.Elements.size(); i++)
+	{
+		testNet.fields[i] = 0;
+	}
+
+
 	cout << scientific << setprecision(15);
 	Eq testSys(testNet);
 	testSys.BuildGlobalProf();
-	testSys.AddSecondCondi();
-	testSys.AddThirdCondi();
+//	testSys.AddSecondCondi();
+//	testSys.AddThirdCondi();
 	testSys.AddFirst();
 	testSys.PrintPlot(testSys.A);
 	testSys.LUFactorization(testSys.AProf, testSys.LU);
