@@ -194,47 +194,41 @@ public:
 	//параметры
 	double U(double x, double y)
 	{
-		return 2 * x * x + 3 * y * y;
+		return 4;
 	}
 
 	double Ug(vector<double>& node, int k)
 	{
 		double x = node[0];
 		double y = node[1];
-		return 2 * x * x + 3;
+		return 4;
 	}
 
 	double UB(vector<double>& node, int k)
 	{
 		double x = node[0];
 		double y = node[1];
-		return -4 * x + 2 + 3 * y * y;
+		return 4;
 	}
 
 	double Tetta(vector<double>& node, int k)
 	{
 		double x = node[0];
 		double y = node[1];
-		switch (k)
-		{
-		case 0:
-			return 8*x;
-		case 1:
-			return 12*y;
-		default:
-			break;
-		}
+		return 0;
 	}
 
 
 	double F(double x, double y, int field)
 	{
-		return 6 * x*x + 9 * y*y -20;
+		return 12;
 	}
 
 	double Lambda(vector<double>& node, int field)
 	{
-		return 2;
+		double x = node[0];
+		double y = node[1];
+		return 2*x+3*y;
 	}
 
 	double Betta(int field)
@@ -461,7 +455,7 @@ public:
 				D_1[i][j] /= DetD;
 			}
 		}
-		vector<vector<double>> G = BuildGDecomposeLinalL(D_1, DetD, el, field);
+		vector<vector<double>> G = BuildGDecomposeLinalL(D_1, DetD, el, field); //LAMBDA RAZLOJENIE ToRemove
 		Matrix M = BuildC(DetD);
 		vector<double> f = { F(x1,y1,field),F(x2,y2,field),F(x3,y3,field) };
 		vector<double> b = MVecMult(M, f);
