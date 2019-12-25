@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <fstream>
 #include <vector>
 #include <functional>
 #include <iomanip>
@@ -39,7 +40,54 @@ public:
 
 	Net(ifstream nodes, ifstream elements, ifstream fields, ifstream condi1, ifstream condi2, ifstream condi3)
 	{
+		double x, y;
+		int a, b, c, field,type;
 
+		while (nodes >> x >> y)
+		{
+			Node.push_back({ x,y });
+		}
+
+		while (elements >>a >>b >>c)
+		{
+			Elements.push_back({ a,b,c });
+		}
+
+		while (fields >> field)
+		{
+			this->fields.push_back(field);
+		}
+
+		while (condi1 >> a >> type)
+		{
+			this->firstCondi.push_back({a,type});
+		}
+
+		while (condi2 >> a >> b >> type)
+		{
+			this->SecondCondi.push_back({ a, b,type });
+		}
+
+		while (condi1 >> a >> b  >> type >> field)
+		{
+			this->ThirdCondi.push_back({ a,b,type, field });
+		}
+	}
+
+	void SaveNet(ofstream nodes, ofstream elements, ofstream fields)
+	{
+		int length = Node.size();
+		for (size_t i = 0; i < length; i++)
+		{
+			nodes << Node[i][0] << " " << Node[i][1] << "\n";
+			fields << this->fields[i] << "\n";
+		}
+
+		int length = this->Elements.size();
+		for (size_t i = 0; i < length; i++)
+		{
+			elements << this->Elements[i][0] << " " << this->Elements[i][1]<<" "<< this->Elements[i][2] << "\n";
+		}
 	}
 	vector<vector<double>> Node;
 	vector<vector<int>> Elements;
