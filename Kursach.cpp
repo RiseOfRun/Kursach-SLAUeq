@@ -877,8 +877,9 @@ int main()
 	condi1.open("condi1.txt");
 	condi2.open("condi2.txt");
 	condi3.open("condi3.txt");
+	
 	//Net testNet;
-	//testNet.BuildNet(1, 2, 1, 2, 4, 4);
+	//testNet.BuildNet(1, 2, 1, 2, 2, 2);
 	//testNet.SaveNet(nodes, elements, fields);
 	//nodes.close();
 	//elements.close();
