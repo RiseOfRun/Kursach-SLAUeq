@@ -194,34 +194,34 @@ public:
 	//параметры
 	double U(double x, double y)
 	{
-		return 4;
+		return x+y;
 	}
 
 	double Ug(vector<double>& node, int k)
 	{
 		double x = node[0];
 		double y = node[1];
-		return 4;
+		return x+1;
 	}
 
 	double UB(vector<double>& node, int k)
 	{
 		double x = node[0];
 		double y = node[1];
-		return 4;
+		return -y/2;
 	}
 
 	double Tetta(vector<double>& node, int k)
 	{
 		double x = node[0];
 		double y = node[1];
-		return 0;
+		return 2*x+3*y;
 	}
 
 
 	double F(double x, double y, int field)
 	{
-		return 12;
+		return -5+3*x+3*y;
 	}
 
 	double Lambda(vector<double>& node, int field)
@@ -303,11 +303,15 @@ public:
 	//разложение коэф дифузии по линейным базисным функциям
 	vector<vector<double>> BuildGDecomposeLinalL(vector<vector<double>>& D_1, double DetD, vector<int>& el, int field) {
 		vector<vector<double>> G(3);
-		double multix = abs(DetD) / 6;
+		double multix = abs(DetD) / 6.;
 		for (int i = 0; i < 3; i++)
 		{
 			for (int j = 0; j < 3; j++)
 			{
+				double l1 = Lambda(FuckingNet.Node[el[0]], field);
+				double l2 = Lambda(FuckingNet.Node[el[1]], field);
+				double l3 = Lambda(FuckingNet.Node[el[2]], field);
+
 				double sumL = Lambda(FuckingNet.Node[el[0]], field) +
 					Lambda(FuckingNet.Node[el[1]], field) +
 					Lambda(FuckingNet.Node[el[2]], field);
