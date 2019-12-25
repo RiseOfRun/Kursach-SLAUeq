@@ -38,7 +38,7 @@ public:
 
 	}
 
-	Net(ifstream nodes, ifstream elements, ifstream fields, ifstream condi1, ifstream condi2, ifstream condi3)
+	Net(fstream & nodes, fstream & elements, fstream & fields, fstream & condi1, fstream & condi2, fstream & condi3)
 	{
 		double x, y;
 		int a, b, c, field,type;
@@ -74,19 +74,19 @@ public:
 		}
 	}
 
-	void SaveNet(ofstream nodes, ofstream elements, ofstream fields)
+	void SaveNet(fstream & nodes, fstream & elements, fstream & fields)
 	{
 		int length = Node.size();
 		for (size_t i = 0; i < length; i++)
 		{
 			nodes << Node[i][0] << " " << Node[i][1] << "\n";
-			fields << this->fields[i] << "\n";
 		}
 
-		int length = this->Elements.size();
+		length = this->Elements.size();
 		for (size_t i = 0; i < length; i++)
 		{
 			elements << this->Elements[i][0] << " " << this->Elements[i][1]<<" "<< this->Elements[i][2] << "\n";
+			fields << this->fields[i] << "\n";
 		}
 	}
 	vector<vector<double>> Node;
@@ -118,6 +118,7 @@ public:
 	//построение сетки на треугольниках
 	void BuildNet(double xmin, double xmax, double ymin, double ymax, int nx, int ny)
 	{
+		
 		double hx = (xmax - xmin) / nx;
 		double hy = (ymax - ymin) / ny;
 		Node = vector<vector<double>>((nx + 1) * (ny + 1));
@@ -156,6 +157,7 @@ public:
 		}
 
 		Elements = Elementstmp;
+		fields.resize(Elements.size());
 		//разбиение на подобласти
 		//DevideBy2Fields();
 	}
@@ -864,7 +866,20 @@ int main()
 	//	{2,0}
 	//};
 	//testNet.BuildNet(0,2,0,2,2,2);
-
+	fstream nodes;
+	fstream elements;
+	fstream fields;
+	fstream condi1;
+	fstream condi2;
+	fstream condi3;
+	nodes.open("nodes.txt");
+	elements.open("elements.txt");
+	fields.open("fields.txt");
+	condi1.open("condi1.txt");
+	condi2.open("condi2.txt");
+	condi3.open("condi3.txt");
+	//Net testNet(nodes,elements,fields, condi1,condi2,condi3);
+	//testNet.SaveNet(nodes, elements, fields);
 
 	testNet.Node = { {1,1}, {2,1}, {1.5,1.5}, {1,2},{2,2} };
 	testNet.Elements = { {0,1,2},{0,2,3},{1,2,4},{2,3,4} };
