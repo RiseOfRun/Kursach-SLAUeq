@@ -192,23 +192,24 @@ public:
 	}
 
 	//параметры
-	double U(double x, double y)
+	double U(double x, double y, int field)
 	{
-		return 2 * x * x + 3 * y * y;
+		if (field == 0) return y * y;
+		return 20 * y - 19;
 	}
 
 	double Ug(vector<double>& node, int k)
 	{
 		double x = node[0];
 		double y = node[1];
-		return 2 * x * x + 3;
+		return y*y;
 	}
 
 	double UB(vector<double>& node, int k)
 	{
 		double x = node[0];
 		double y = node[1];
-		return -4 * x + 2 + 3 * y * y;
+		return 20*y-27;
 	}
 
 	double Tetta(vector<double>& node, int k)
@@ -218,9 +219,9 @@ public:
 		switch (k)
 		{
 		case 0:
-			return 8*x;
+			return 20;
 		case 1:
-			return 12*y;
+			return 0;
 		default:
 			break;
 		}
@@ -229,12 +230,28 @@ public:
 
 	double F(double x, double y, int field)
 	{
-		return 6 * x*x + 9 * y*y -20;
+		switch (field)
+		{
+		case 0:
+			return -20;
+		case 1:
+			return 0;
+		default:
+			break;
+		}
 	}
 
 	double Lambda(vector<double>& node, int field)
 	{
-		return 2;
+		switch (field)
+		{
+		case 0:
+			return 10;
+		case 1:
+			return 1;
+		default:
+			break;
+		}
 	}
 
 	double Betta(int field)
@@ -244,7 +261,7 @@ public:
 
 	double Gamma(int field)
 	{
-		return 3;
+		return 0;
 	}
 	//параметры
 
@@ -906,8 +923,11 @@ int main()
 	cout << scientific << setprecision(15);
 	Eq testSys(testNet);
 	testSys.BuildGlobalProf();
-	testSys.AddThirdCondi();
+	testSys.PrintPlot(testSys.A);
 	testSys.AddSecondCondi();
+	testSys.AddThirdCondi();
+	cout << "\n\n";
+	testSys.PrintPlot(testSys.A);
 	testSys.AddFirst();
 
 
@@ -926,7 +946,12 @@ int main()
 
 	for (size_t i = 0; i < testSys.AProf.size; i++)
 	{
-		double U = testSys.U(testSys.FuckingNet.Node[i][0], testSys.FuckingNet.Node[i][1]);
+		int field = 0;
+		if (i>=3)
+		{
+			field = 1;
+		}
+		double U = testSys.U(testSys.FuckingNet.Node[i][0], testSys.FuckingNet.Node[i][1],field);
 		cout << testSys.q[i] << " " << U << " " << abs(U - testSys.q[i]) << endl;
 	}
 	vector<double> rezult(testSys.AProf.size);
