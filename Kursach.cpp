@@ -426,7 +426,7 @@ public:
 			vector<int> element = FuckingNet.Elements[i];
 			int field = FuckingNet.fields[i];
 			BuildLocal(element, field);
-			PrintPlot(A);
+			//PrintPlot(A);
 			cout << "\n\n\n";
 		}
 	}
@@ -864,7 +864,7 @@ int main()
 	//	{0,0},
 	//	{2,0}
 	//};
-	//testNet.BuildNet(0,2,0,2,2,2);
+
 	fstream nodes;
 	fstream elements;
 	fstream fields;
@@ -878,8 +878,12 @@ int main()
 	condi2.open("condi2.txt");
 	condi3.open("condi3.txt");
 	//Net testNet;
-	Net testNet(nodes,elements,fields, condi1,condi2,condi3);
+	//testNet.BuildNet(1, 2, 1, 2, 4, 4);
 	//testNet.SaveNet(nodes, elements, fields);
+	//nodes.close();
+	//elements.close();
+	//fields.close();
+	Net testNet(nodes,elements,fields, condi1,condi2,condi3);
 
 	//testNet.Node = { {1,1}, {2,1}, {1.5,1.5}, {1,2},{2,2} };
 	//testNet.Elements = { {0,1,2},{0,2,3},{1,2,4},{2,3,4} };
@@ -907,7 +911,7 @@ int main()
 	testSys.AddFirst();
 
 
-	testSys.PrintPlot(testSys.A);
+	//testSys.PrintPlot(testSys.A);
 	testSys.LUFactorization(testSys.AProf, testSys.LU);
 	AuxVectors useless;
 	useless.Ax = vector<double>(testSys.AProf.size);
@@ -917,6 +921,9 @@ int main()
 	useless.z = vector<double>(testSys.AProf.size);
 	useless.temp = vector<double>(testSys.AProf.size);
 	testSys.LOS_LU(testSys.AProf, testSys.q, testSys.b, testSys.LU, useless, 10000, 1e-13);
+
+	cout << "\n";
+
 	for (size_t i = 0; i < testSys.AProf.size; i++)
 	{
 		double U = testSys.U(testSys.FuckingNet.Node[i][0], testSys.FuckingNet.Node[i][1]);
