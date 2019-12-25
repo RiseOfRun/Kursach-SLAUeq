@@ -68,7 +68,7 @@ public:
 			this->SecondCondi.push_back({ a, b,type });
 		}
 
-		while (condi1 >> a >> b  >> type >> field)
+		while (condi3 >> a >> b  >> type >> field)
 		{
 			this->ThirdCondi.push_back({ a,b,type, field });
 		}
@@ -837,7 +837,6 @@ private:
 
 int main()
 {
-	Net testNet;
 	//testNet.BuildNet(0, 2, 0, 2, 2, 2);
 	//testNet.Node = vector<vector<double>>{
 	//{2,0},
@@ -878,25 +877,26 @@ int main()
 	condi1.open("condi1.txt");
 	condi2.open("condi2.txt");
 	condi3.open("condi3.txt");
-	//Net testNet(nodes,elements,fields, condi1,condi2,condi3);
+	//Net testNet;
+	Net testNet(nodes,elements,fields, condi1,condi2,condi3);
 	//testNet.SaveNet(nodes, elements, fields);
 
-	testNet.Node = { {1,1}, {2,1}, {1.5,1.5}, {1,2},{2,2} };
-	testNet.Elements = { {0,1,2},{0,2,3},{1,2,4},{2,3,4} };
-	testNet.firstCondi = { {0,0},{1,0} };
-	testNet.SecondCondi = {
-		{1,4,0},
-		{3,4,1},
-		//{0,3,2}
-	};
-	testNet.ThirdCondi = {
-		{0,3,0,0}
-	};
-	testNet.fields.resize(testNet.Elements.size());
-	for (size_t i = 0; i < testNet.Elements.size(); i++)
-	{
-		testNet.fields[i] = 0;
-	}
+	//testNet.Node = { {1,1}, {2,1}, {1.5,1.5}, {1,2},{2,2} };
+	//testNet.Elements = { {0,1,2},{0,2,3},{1,2,4},{2,3,4} };
+	//testNet.firstCondi = { {0,0},{1,0} };
+	//testNet.SecondCondi = {
+	//	{1,4,0},
+	//	{3,4,1},
+	//	//{0,3,2}
+	//};
+	//testNet.ThirdCondi = {
+	//	{0,3,0,0}
+	//};
+	//testNet.fields.resize(testNet.Elements.size());
+	//for (size_t i = 0; i < testNet.Elements.size(); i++)
+	//{
+	//	testNet.fields[i] = 0;
+	//}
 
 
 	cout << scientific << setprecision(15);
